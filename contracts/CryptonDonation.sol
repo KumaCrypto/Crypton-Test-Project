@@ -12,7 +12,7 @@ contract CryptonDonation is Ownable {
   mapping (address => uint) private donationAmount;
 
 
-    receive() external payable {
+  receive() external payable {
     require(msg.value > 0 ether, "Donation must be greater than 0!");
 
     if (donationAmount[msg.sender] == 0) {
