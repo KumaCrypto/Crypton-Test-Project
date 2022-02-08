@@ -7,7 +7,7 @@ async function main() {
 
   await cryptonDonation.deployed();
   
-  console.log("CryptonDonation deployed to: ", transfers.address);
+  console.log("CryptonDonation deployed to: ", cryptonDonation.address);
 }
 
 main()
