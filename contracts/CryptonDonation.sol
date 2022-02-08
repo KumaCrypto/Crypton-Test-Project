@@ -11,6 +11,18 @@ contract CryptonDonation is Ownable {
   address[] private donators;
   mapping (address => uint) private donationAmount;
 
+
+    receive() external payable {
+    require(msg.value > 0 ether, "Donation must be greater than 0!");
+
+    if (donationAmount[msg.sender] == 0) {
+      donators.push(msg.sender);
+    }
+
+    donationAmount[msg.sender] += msg.value;
+    emit DonationReceived(msg.sender, msg.value);
+  }
+
   function withdrawFunds(uint _amount) external onlyOwner {
     require(_amount <= address(this).balance,
     "There aren't enough funds on the contract!");
@@ -25,16 +37,5 @@ contract CryptonDonation is Ownable {
 
   function getDonationAmount(address _donator) public view returns(uint) {
     return donationAmount[_donator];
-  }
-
-  receive() external payable {
-    require(msg.value > 0 ether, "Donation must be greater than 0!");
-
-    if (donationAmount[msg.sender] == 0) {
-      donators.push(msg.sender);
-    }
-
-    donationAmount[msg.sender] += msg.value;
-    emit DonationReceived(msg.sender, msg.value);
   }
 }
