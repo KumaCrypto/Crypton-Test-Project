@@ -48,15 +48,15 @@ describe("CryptonDonation", function () {
     });
   });
 
-  describe('sendDonation', function () {
+  describe('Receiving a donation', function () {
     it("If the donation without ethers - revert", async function () {
 
-      const tx = {
+      let options = {
         to: Donation.address,
         value: await ethers.utils.parseEther("0")
       }
 
-      await expect(acc1.sendTransaction(tx)).to.be.revertedWith
+      await expect(acc1.sendTransaction(options)).to.be.revertedWith
         ("Donation must be greater than 0!");
 
       expect(await Donation
@@ -75,10 +75,11 @@ describe("CryptonDonation", function () {
     it("New donator added to the array", async function () {
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
 
 
       let donators = await Donation.getDonators();
@@ -90,11 +91,12 @@ describe("CryptonDonation", function () {
     it("Donator already added to the array is not added again", async function () {
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
+      await acc1.sendTransaction(options);
 
 
       let donators = await Donation.getDonators();
@@ -107,10 +109,11 @@ describe("CryptonDonation", function () {
     it("The balance of the contract is replenished", async function () {
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
 
       expect(await ethers.provider.getBalance(Donation.address))
         .to.equal(options.value);
@@ -122,10 +125,11 @@ describe("CryptonDonation", function () {
     it("The amount of the donation is recorded in the mapping", async function () {
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
 
       expect(await Donation.getDonationAmount(acc1.address))
         .to.equal(options.value);
@@ -136,11 +140,12 @@ describe("CryptonDonation", function () {
     it("Donation amount increases in mapping", async function () {
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
+      await acc1.sendTransaction(options);
 
       expect(await Donation.getDonationAmount(acc1.address))
         .to.equal(ethers.utils.parseEther("2"));
@@ -152,12 +157,12 @@ describe("CryptonDonation", function () {
     it("Event work correctly ", async function () {
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
 
-      await expect(Donation.
-        connect(acc1).sendDonation(options))
+      await expect(acc1.sendTransaction(options))
         .to.emit(Donation, 'DonationReceived')
         .withArgs(acc1.address, options.value);
     });
@@ -168,10 +173,11 @@ describe("CryptonDonation", function () {
     it("Full fucntion logic", async function () {
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options)
 
       let donators = await Donation.getDonators();
       expect(donators[0]).to.equal(acc1.address);
@@ -183,8 +189,7 @@ describe("CryptonDonation", function () {
       expect(await Donation.getDonationAmount(acc1.address))
         .to.equal(options.value);
 
-      await expect(Donation.
-        connect(acc1).sendDonation(options))
+      await expect(acc1.sendTransaction(options))
         .to.emit(Donation, 'DonationReceived')
         .withArgs(acc1.address, options.value);
     });
@@ -217,10 +222,11 @@ describe("CryptonDonation", function () {
 
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
 
       await expect(await Donation.withdrawFunds(1000000))
         .to.changeEtherBalance(owner, 1000000);
@@ -231,10 +237,11 @@ describe("CryptonDonation", function () {
 
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
 
       await expect(await Donation.withdrawFunds(1000000))
         .to.changeEtherBalance(Donation, -1000000);
@@ -245,10 +252,11 @@ describe("CryptonDonation", function () {
 
 
       let options = {
+        to: Donation.address,
         value: await ethers.utils.parseEther("1")
       }
 
-      await Donation.connect(acc1).sendDonation(options);
+      await acc1.sendTransaction(options);
 
       await expect(await Donation.withdrawFunds(1000000))
         .to.emit(Donation, "FundsWithdrawn").withArgs(1000000,
@@ -257,58 +265,58 @@ describe("CryptonDonation", function () {
 
   })
 
-  describe("Receive function", function () {
+  // describe("Receive function", function () {
 
-    it("Balance increases", async function () {
+  //   it("Balance increases", async function () {
 
-      const tx = {
-        to: Donation.address,
-        value: await ethers.utils.parseEther("1")
-      }
+  //     const tx = {
+  //       to: Donation.address,
+  //       value: await ethers.utils.parseEther("1")
+  //     }
 
-      await expect(await acc1.sendTransaction(tx))
-        .to.changeEtherBalance(Donation, tx.value);
-    });
-
-
-    it("Balance increases", async function () {
-
-      const tx = {
-        to: Donation.address,
-        value: await ethers.utils.parseEther("1")
-      }
-
-      await expect(await acc1.sendTransaction(tx))
-        .to.changeEtherBalance(Donation, tx.value);
+  //     await expect(await acc1.sendTransaction(tx))
+  //       .to.changeEtherBalance(Donation, tx.value);
+  //   });
 
 
-      let donators = await Donation.getDonators();
-      expect(donators[0]).to.equal(acc1.address);
+  //   it("Balance increases", async function () {
+
+  //     const tx = {
+  //       to: Donation.address,
+  //       value: await ethers.utils.parseEther("1")
+  //     }
+
+  //     await expect(await acc1.sendTransaction(tx))
+  //       .to.changeEtherBalance(Donation, tx.value);
 
 
-      expect(await ethers.provider.getBalance(Donation.address))
-        .to.equal(tx.value);
-
-      expect(await Donation.getDonationAmount(acc1.address))
-        .to.equal(tx.value);
+  //     let donators = await Donation.getDonators();
+  //     expect(donators[0]).to.equal(acc1.address);
 
 
-    });
+  //     expect(await ethers.provider.getBalance(Donation.address))
+  //       .to.equal(tx.value);
+
+  //     expect(await Donation.getDonationAmount(acc1.address))
+  //       .to.equal(tx.value);
+
+
+  //   });
 
 
 
-    it("Balance increases", async function () {
+  //   it("Balance increases", async function () {
 
-      const tx = {
-        to: Donation.address,
-        value: await ethers.utils.parseEther("1")
-      }
+  //     const tx = {
+  //       to: Donation.address,
+  //       value: await ethers.utils.parseEther("1")
+  //     }
 
-      await expect(
-        acc1.sendTransaction(tx))
-        .to.emit(Donation, 'DonationReceived')
-        .withArgs(acc1.address, tx.value);
-    });
-  });
+  //     await expect(
+  //       acc1.sendTransaction(tx))
+  //       .to.emit(Donation, 'DonationReceived')
+  //       .withArgs(acc1.address, tx.value);
+  //   });
+  // });
 
 });
