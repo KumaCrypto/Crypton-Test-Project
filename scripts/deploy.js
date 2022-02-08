@@ -7,7 +7,9 @@ async function main() {
 
   await cryptonDonation.deployed();
   
-  console.log("CryptonDonation deployed to: ", cryptonDonation.address);
+  console.log("CryptonDonation deployed to address: ", cryptonDonation.address);
+  console.log("CryptonDonation deployed to block: ", await hre.ethers.provider.getBlockNumber());
+  console.log("CryptonDonation owner is: ", await (cryptonDonation.provider.getSigner() ).getAddress() );
 }
 
 main()
