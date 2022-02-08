@@ -5,11 +5,11 @@ const { ethers } = require("hardhat");
 describe("CryptonDonation", function () {
 
   let CryptonDonation,
-      Donation;
+    Donation;
 
   let owner,
-      acc1;
-  
+    acc1;
+
 
   before(async function () {
     CryptonDonation = await ethers.getContractFactory("CryptonDonation");
@@ -57,7 +57,7 @@ describe("CryptonDonation", function () {
       }
 
       await expect(acc1.sendTransaction(tx)).to.be.revertedWith
-      ("Donation must be greater than 0!");
+        ("Donation must be greater than 0!");
 
       expect(await Donation
         .getDonationAmount(acc1.address)).to.equal(0);
@@ -103,7 +103,7 @@ describe("CryptonDonation", function () {
     });
 
 
-    
+
     it("The balance of the contract is replenished", async function () {
 
       let options = {
@@ -113,7 +113,7 @@ describe("CryptonDonation", function () {
       await Donation.connect(acc1).sendDonation(options);
 
       expect(await ethers.provider.getBalance(Donation.address))
-      .to.equal(options.value);
+        .to.equal(options.value);
 
     });
 
@@ -128,7 +128,7 @@ describe("CryptonDonation", function () {
       await Donation.connect(acc1).sendDonation(options);
 
       expect(await Donation.getDonationAmount(acc1.address))
-      .to.equal(options.value);
+        .to.equal(options.value);
     });
 
 
@@ -143,7 +143,7 @@ describe("CryptonDonation", function () {
       await Donation.connect(acc1).sendDonation(options);
 
       expect(await Donation.getDonationAmount(acc1.address))
-      .to.equal(ethers.utils.parseEther("2"));
+        .to.equal(ethers.utils.parseEther("2"));
     });
 
 
@@ -178,10 +178,10 @@ describe("CryptonDonation", function () {
 
 
       expect(await ethers.provider.getBalance(Donation.address))
-      .to.equal(options.value);
+        .to.equal(options.value);
 
       expect(await Donation.getDonationAmount(acc1.address))
-      .to.equal(options.value);
+        .to.equal(options.value);
 
       await expect(Donation.
         connect(acc1).sendDonation(options))
@@ -191,15 +191,15 @@ describe("CryptonDonation", function () {
 
   });
 
-  describe('withdrawFunds', function() {
+  describe('withdrawFunds', function () {
 
     it('Reverted if requested amount is greater than balance', async function () {
       expect(await ethers.provider.getBalance(Donation.address))
-      .to.equal(0);
+        .to.equal(0);
 
       await expect(Donation.withdrawFunds(100))
-      .to.be
-      .revertedWith("There aren't enough funds on the contract!");
+        .to.be
+        .revertedWith("There aren't enough funds on the contract!");
     });
 
 
@@ -207,8 +207,8 @@ describe("CryptonDonation", function () {
     it('Reverted if function called by non-owner', async function () {
 
       await expect(Donation.connect(acc1).withdrawFunds(1))
-      .to.be
-      .revertedWith("Ownable: caller is not the owner");
+        .to.be
+        .revertedWith("Ownable: caller is not the owner");
     });
 
 
@@ -223,7 +223,7 @@ describe("CryptonDonation", function () {
       await Donation.connect(acc1).sendDonation(options);
 
       await expect(await Donation.withdrawFunds(1000000))
-      .to.changeEtherBalance(owner, 1000000);
+        .to.changeEtherBalance(owner, 1000000);
     });
 
 
@@ -237,7 +237,7 @@ describe("CryptonDonation", function () {
       await Donation.connect(acc1).sendDonation(options);
 
       await expect(await Donation.withdrawFunds(1000000))
-      .to.changeEtherBalance(Donation, -1000000);
+        .to.changeEtherBalance(Donation, -1000000);
     });
 
 
@@ -251,15 +251,15 @@ describe("CryptonDonation", function () {
       await Donation.connect(acc1).sendDonation(options);
 
       await expect(await Donation.withdrawFunds(1000000))
-      .to.emit(Donation, "FundsWithdrawn").withArgs(1000000,
-        await ethers.provider.getBlockNumber());
+        .to.emit(Donation, "FundsWithdrawn").withArgs(1000000,
+          await ethers.provider.getBlockNumber());
     });
 
   })
 
-  describe("Receive function", function() {
+  describe("Receive function", function () {
 
-    it("Balance increases", async function() {
+    it("Balance increases", async function () {
 
       const tx = {
         to: Donation.address,
@@ -297,7 +297,7 @@ describe("CryptonDonation", function () {
 
 
 
-    it("Balance increases", async function() {
+    it("Balance increases", async function () {
 
       const tx = {
         to: Donation.address,
