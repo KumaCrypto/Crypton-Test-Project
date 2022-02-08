@@ -2,7 +2,7 @@ const hre = require("hardhat");
 const ethers = hre.ethers;
 
 async function main() {
-  const CryptonDonation = await ethers.getContractFactory("Transfers");
+  const CryptonDonation = await ethers.getContractFactory("CryptonDonation");
   const cryptonDonation = await CryptonDonation.deploy();
 
   await cryptonDonation.deployed();
