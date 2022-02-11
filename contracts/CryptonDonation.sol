@@ -25,7 +25,7 @@ contract CryptonDonation is Ownable {
 
   function withdrawFunds(uint _amount) external onlyOwner {
     require(_amount <= address(this).balance,
-    "There aren't enough funds on the contract!");
+    "Not enough funds on the contract!");
 
     payable(msg.sender).transfer(_amount);
     emit FundsWithdrawn(_amount, block.number);
